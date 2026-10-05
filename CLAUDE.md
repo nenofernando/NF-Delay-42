@@ -34,6 +34,7 @@ Mac is Intel; JUCE is at `~/JUCE`. Dev build (VST3+AU, no copy step):
 mkdir -p build && cd build && cmake .. -DCMAKE_OSX_ARCHITECTURES=x86_64 -DFETCHCONTENT_SOURCE_DIR_JUCE=$HOME/JUCE -DCMAKE_BUILD_TYPE=Release
 cmake --build . --target NFDelay42_VST3 NFDelay42_AU NFDelay42DspTests -j8
 ```
+Tests with `-DNFDelay42_BUILD_SNAPSHOT=ON`: `NFDelay42Interaction` (drives the real editor: every button, knob, UP/DOWN, SET-MODE, presets, logo click, display wheel/drag, BYPASS lamp, state round-trip, audio through processBlock; must exit 0), `NFDelay42HostLoad "<path to NF D-42.vst3>"` (loads the shipped VST3 like a host: scan, audio, sample rates, state, editor). Not covered: press-and-hold repeat timing, real DAW/AAX.
 UI snapshot (renders the editor to a PNG, never shipped): `-DNFDelay42_BUILD_SNAPSHOT=ON`, target `NFDelay42Snapshot`, usage `NFDelay42Snapshot out.png [width] [tap] [clockMode] [peakDb]`.
 AAX (owner's Mac only): `-DNFDelay42_ENABLE_AAX=ON` with the SDK in `~/Documents/AAX_SDK`, then sign with PACE `wraptool` (no wrap GUID registered yet for this product).
 
