@@ -48,6 +48,7 @@ juce::String PresetManager::getCurrentPresetName (juce::AudioProcessorValueTreeS
 std::vector<PresetEntry> PresetManager::listAll()
 {
     std::vector<PresetEntry> out;
+    out.push_back ({ "Default", -2, {} });                           // every control at its starting position
     for (int i = 0; i < kNumFactory; ++i) out.push_back ({ kFactory[i].name, i, {} });
     auto files = getPresetsDirectory().findChildFiles (juce::File::findFiles, false, "*.xml");
     files.sort();
@@ -65,6 +66,7 @@ void PresetManager::restoreDefault (juce::AudioProcessorValueTreeState& apvts)
 
 void PresetManager::applyEntry (juce::AudioProcessorValueTreeState& apvts, const PresetEntry& e)
 {
+    if (e.factoryIndex == -2) { restoreDefault (apvts); return; }
     if (e.factoryIndex >= 0 && e.factoryIndex < kNumFactory)
     {
         const auto& f = kFactory[e.factoryIndex];

@@ -1,5 +1,6 @@
 #include "PluginEditor.h"
 #include "NFDelay42BinaryData.h"
+#include "ManualManager.h"
 
 using namespace nfd42ui;
 using juce::Rectangle; using juce::Graphics;
@@ -130,7 +131,7 @@ NFDelay42Editor::NFDelay42Editor (NFDelay42AudioProcessor& p) : AudioProcessorEd
     menuBtn.onClick = [this] { showMainMenu(); };
     refreshPresetName();
 
-    const int w = juce::jlimit (850, 3400, (int) proc.apvts.state.getProperty ("uiWidth", 1500));
+    const int w = juce::jlimit (850, 3400, (int) proc.apvts.state.getProperty ("uiWidth", kDefaultWidth));
     setResizable (true, true);
     setResizeLimits (850, 76, 3400, 304);
     getConstrainer()->setFixedAspectRatio ((double) (kW / kH));
@@ -157,7 +158,7 @@ void NFDelay42Editor::resized()
     place (infBtn, 768, 138, 36, 36);   place (x2Btn, 257, 137, 42, 42);      place (power, 1548, 137, 42, 42);
     place (downBtn, 836, 124, 45, 45);  place (upBtn, 908, 124, 45, 45);      place (setMode, 872, 89, 30, 13);
     place (presetTab, 1600.5f, 53.5f, 157, 21); place (menuBtn, 1690.5f, 53.5f, 21, 21);
-    displayRect = { 948, 85, 165, 62 }; bypassRect = { 606, 148, 64, 18 };
+    logoRect = { 1526, 64, 76, 46 }; displayRect = { 948, 85, 165, 62 }; bypassRect = { 606, 148, 64, 18 };
 }
 
 void NFDelay42Editor::paint (Graphics& g)
@@ -240,6 +241,7 @@ bool NFDelay42Editor::overDisplay (juce::Point<int> p) const { return displayRec
 
 void NFDelay42Editor::mouseDown (const juce::MouseEvent& e)
 {
+    if (logoRect.contains (toDesign (e.getPosition()))) { setSize (kDefaultWidth, juce::roundToInt (kDefaultWidth * kH / kW)); return; }   // logo click: back to the default size
     if (bypassRect.contains (toDesign (e.getPosition()))) { if (auto* p = proc.apvts.getParameter ("bypass")) { p->beginChangeGesture(); p->setValueNotifyingHost (p->getValue() > 0.5f ? 0.0f : 1.0f); p->endChangeGesture(); } }
     dragStartTap = getIntParam ("tap");
 }
@@ -300,16 +302,20 @@ void NFDelay42Editor::showPresetMenu()
     const auto all = nfd42::PresetManager::listAll();
     juce::PopupMenu m; int nFactory = 0; for (auto& e : all) if (e.factoryIndex >= 0) ++nFactory;
     juce::PopupMenu fac, usr;
+    const auto cur = nfd42::PresetManager::getCurrentPresetName (proc.apvts);
     for (int i = 0; i < (int) all.size(); ++i)
-        (all[(size_t) i].factoryIndex >= 0 ? fac : usr).addItem (100 + i, all[(size_t) i].name, true, all[(size_t) i].name == nfd42::PresetManager::getCurrentPresetName (proc.apvts));
-    m.addSectionHeader ("Factory presets"); m.addSubMenu ("Factory", fac);
-    if ((int) all.size() > nFactory) m.addSubMenu ("My presets", usr);
-    m.addSeparator(); m.addItem (1, "Save preset..."); m.addItem (2, "Load preset..."); m.addItem (3, "Restore default");
+    {
+        const auto& e = all[(size_t) i];
+        if (e.factoryIndex == -2) m.addItem (100 + i, "Default", true, cur == "Default");
+        else (e.factoryIndex >= 0 ? fac : usr).addItem (100 + i, e.name, true, e.name == cur);
+    }
+    m.addSeparator(); m.addSubMenu ("Factory presets", fac);
+    if ((int) all.size() > nFactory + 1) m.addSubMenu ("My presets", usr);
+    m.addSeparator(); m.addItem (1, "Save preset..."); m.addItem (2, "Load preset...");
     m.showMenuAsync (juce::PopupMenu::Options().withTargetComponent (&presetTab), [this, all] (int r)
     {
         if (r == 0) return;
         if (r >= 100) { nfd42::PresetManager::applyEntry (proc.apvts, all[(size_t) (r - 100)]); refreshPresetName(); }
-        else if (r == 3) { nfd42::PresetManager::restoreDefault (proc.apvts); refreshPresetName(); }
         else if (r == 1)
         {
             chooser = std::make_unique<juce::FileChooser> ("Save preset", nfd42::PresetManager::getPresetsDirectory().getChildFile ("My preset.xml"), "*.xml");
@@ -330,10 +336,12 @@ void NFDelay42Editor::showPresetMenu()
 
 void NFDelay42Editor::showMainMenu()
 {
-    juce::PopupMenu m; m.addItem (1, "About NF Delay 42");
+    juce::PopupMenu m; m.addItem (10, "User manual (English)"); m.addItem (11, juce::String (juce::CharPointer_UTF8 ("Manual do usu\xc3\xa1rio (Portugu\xc3\xaas)"))); m.addSeparator(); m.addItem (1, "About NF Delay 42");
     m.showMenuAsync (juce::PopupMenu::Options().withTargetComponent (&menuBtn), [] (int r)
     {
-        if (r == 1)
+        if (r == 10) nfd42::ManualManager::openManual (NFDelay42BinaryData::NF_Delay42_Manual_English_pdf, NFDelay42BinaryData::NF_Delay42_Manual_English_pdfSize, "NF_Delay42_Manual_English.pdf");
+        else if (r == 11) nfd42::ManualManager::openManual (NFDelay42BinaryData::NF_Delay42_Manual_Portugues_pdf, NFDelay42BinaryData::NF_Delay42_Manual_Portugues_pdfSize, "NF_Delay42_Manual_Portugues.pdf");
+        else if (r == 1)
             juce::AlertWindow::showMessageBoxAsync (juce::MessageBoxIconType::InfoIcon, "NF Delay 42",
                 juce::String ("Version ") + JucePlugin_VersionString + "\nNF Audio Tools by Nenno Fernando\n\n"
                 "A digital delay processor with VCO sweep, programmable clock and infinite repeat, modelled on the behaviour described "

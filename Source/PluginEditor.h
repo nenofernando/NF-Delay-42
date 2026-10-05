@@ -17,6 +17,7 @@ public:
     void mouseDrag (const juce::MouseEvent&) override;
     void mouseWheelMove (const juce::MouseEvent&, const juce::MouseWheelDetails&) override;
 
+    static constexpr int kDefaultWidth = 1500;
     static constexpr float kW = 1700.0f, kH = 152.0f, kOx = 22.0f, kOy = 40.0f;
     static void drawChassis (juce::Graphics& g, float pixelWidth);
 
@@ -55,7 +56,7 @@ private:
     // live read-outs
     float shownDelay = 0.0f, shownPeak = -120.0f; uint32_t lastTicks = 0; juce::int64 clkFlashUntil = 0;
     bool firstDown = false, firstPressedUp = false; int heldMs = 0, repeatAcc = 0; int dragStartTap = 0;
-    juce::Rectangle<float> displayRect, bypassRect;
+    juce::Rectangle<float> displayRect, bypassRect, logoRect;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NFDelay42Editor)
 };
