@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""NF Delay 42 user manuals (English + Portuguese) as PDFs, in the plug-in's colours (plate grey, blue sections, red accents).
+"""NF D-42 user manuals (English + Portuguese) as PDFs, in the plug-in's colours (plate grey, blue sections, red accents).
 
 Inputs (kept in the repo): Docs/manual/img/panel.png, panel_clk.png (captures from NFDelay42Snapshot, see CLAUDE.md),
                            Source/PresetManager.cpp (the factory preset table is read from it), Assets/Logo/nf_audio_tools_logo.png
-Usage:  python3 Docs/make_manual.py  ->  Assets/Manuals/NF_Delay42_Manual_{English,Portugues}.pdf
+Usage:  python3 Docs/make_manual.py  ->  Assets/Manuals/NF_D42_Manual_{English,Portugues}.pdf
 Regenerate after any UI or DSP change (and re-capture the images). The PDFs are embedded in the plug-in (3-line menu)."""
 import os, re
 from PIL import Image, ImageDraw, ImageFont
@@ -62,13 +62,13 @@ def annotated():
 class Doc:
     def __init__(self, path, lang):
         self.c = canvas.Canvas(path, pagesize=A4); self.lang = lang; self.n = 0; self.y = 0
-        self.c.setTitle('NF Delay 42 - ' + ('User Manual' if lang == 'en' else 'Manual do Usuário')); self.c.setAuthor('NF Audio Tools by Nenno Fernando')
+        self.c.setTitle('NF D-42 - ' + ('User Manual' if lang == 'en' else 'Manual do Usuário')); self.c.setAuthor('NF Audio Tools by Nenno Fernando')
     def page(self):
         if self.n: self.c.showPage()
         self.n += 1; c = self.c
         c.setFillColor(BG); c.rect(0, 0, W, H, fill=1, stroke=0)
         c.setFillColor(PLATE); c.rect(0, H - 40, W, 40, fill=1, stroke=0)
-        c.setFillColor(white); c.setFont('Helvetica-Bold', 11); c.drawString(M, H - 25, 'NF DELAY 42')
+        c.setFillColor(white); c.setFont('Helvetica-Bold', 11); c.drawString(M, H - 25, 'NF D-42')
         c.setFont('Helvetica', 9); c.drawRightString(W - M, H - 25, 'NF Audio Tools by Nenno Fernando  -  V%s' % VERSION)
         c.setFillColor(BLUE); c.rect(0, H - 43, W, 3, fill=1, stroke=0)
         c.setFillColor(INK2); c.setFont('Helvetica', 8.5); c.drawCentredString(W / 2, 24, '%s %d' % ('Page' if self.lang == 'en' else 'Página', self.n))
@@ -134,7 +134,7 @@ class Doc:
         c.setFillColor(PLATE); c.rect(0, 0, W, H, fill=1, stroke=0)
         c.setFillColor(BLUE); c.rect(0, H * 0.46, W, 5, fill=1, stroke=0)
         c.drawImage(LOGO, M, H - 150, 150, 150 * 170 / 307, mask='auto')
-        c.setFillColor(white); c.setFont('Helvetica-Bold', 40); c.drawString(M, H * 0.46 + 130, 'NF Delay 42')
+        c.setFillColor(white); c.setFont('Helvetica-Bold', 40); c.drawString(M, H * 0.46 + 130, 'NF D-42')
         c.setFont('Helvetica', 17); c.setFillColor(Color(0.85, 0.87, 0.95)); c.drawString(M, H * 0.46 + 100, tag)
         c.setFont('Helvetica', 12); c.drawString(M, H * 0.46 + 78, sub)
         pw = W - 2 * M; p = os.path.join(IMG, 'panel.png'); iw, ih = Image.open(p).size
@@ -146,16 +146,16 @@ class Doc:
 
 # ------------------------------------------------------------------ texts
 EN = dict(
- file='NF_Delay42_Manual_English.pdf', tag='Digital delay processor', sub='User manual', ver='Version %s' % VERSION,
+ file='NF_D42_Manual_English.pdf', tag='Digital delay processor', sub='User manual', ver='Version %s' % VERSION,
  intro_h='Introduction',
- intro=['NF Delay 42 is a digital delay processor with a long delay memory, a voltage-controlled sweep (VCO), a programmable clock and an infinite-repeat '
+ intro=['NF D-42 is a digital delay processor with a long delay memory, a voltage-controlled sweep (VCO), a programmable clock and an infinite-repeat '
         'function. It covers everything from tight doubling, chorus and flanging (a few milliseconds) through slap-back and tape-style echoes, to long delays and '
         'live looping of up to 2.4 seconds.',
         'It is modelled on the behaviour described in the public owner\'s manual of a classic 1U rack digital delay: delay ranges, sweep ratio, input limiter, filters, '
         'clock and repeat logic follow that manual. It is an original NF Audio Tools product; it is not affiliated with, or endorsed by, the maker of any '
         'hardware it was inspired by, and all trademarks belong to their respective owners.'],
  quick_h='Quick start',
- quick=['Insert NF Delay 42 on a track or aux (stereo or mono). Pick a preset from the preset tab (top right), for example "Slapback" or "Flanger".',
+ quick=['Insert NF D-42 on a track or aux (stereo or mono). Pick a preset from the preset tab (top right), for example "Slapback" or "Flanger".',
         'Set LEVEL so the HEADROOM lamps reach the amber lamp (-6) on peaks. The red lamp (0 dB) means the input limiter is working.',
         'OUTPUT MIX blends the direct and the delayed signal (centre = equal blend). FEEDBACK sets how many repeats you hear.',
         'Set the delay time with the UP / DOWN buttons, the mouse wheel over the display, or by dragging the display up and down.',
@@ -211,7 +211,7 @@ EN = dict(
        ('Vibrato', 'OUTPUT MIX fully right (delayed only), delay 10 to 20 ms, FEEDBACK 0, DEPTH 2 to 4, sine, RATE 6 to 7.'),
        ('Pitch twisting', 'OUTPUT MIX fully right, DEPTH 6, square or sine; or turn MANUAL by hand while a sound plays.'),
        ('Looping', 'Play a phrase, press INFINITE REPEAT, then layer over it. Use SET-MODE CLK to choose when the capture happens.')],
- pre_h='Presets', pre_p='The preset tab has Default (every control at its starting position), 12 factory presets and a list of the presets you save. Save writes a file to Documents/NF Audio Tools/NF Delay 42/Presets.',
+ pre_h='Presets', pre_p='The preset tab has Default (every control at its starting position), 12 factory presets and a list of the presets you save. Save writes a file to Documents/NF Audio Tools/NF D-42/Presets.',
  pre_head=['Preset', 'Delay', 'Feedback', 'Mix', 'Switches', 'Depth', 'Wave', 'Rate'],
  tips_h='Tips', tips=['Keep an eye on the HEADROOM lamps: if the red lamp stays on, lower LEVEL. The input limiter is gentle by design, but it still colours the sound.',
       'Feedback at 10 sustains for a very long time. Lower it, switch HI CUT on, or use BYPASS to stop the repeats at once.',
@@ -222,19 +222,19 @@ EN = dict(
        ('Delay range', 'X1: 0 to 1200 ms; X2: 0 to 2400 ms (see table)'), ('Delay taps', '256 per range'), ('Sweep', 'Depth 0 to a full 3:1 range; rate 0.1 to 10 Hz; sine, envelope, square and blends'),
        ('Bandwidth', '16 kHz (X1) and 6 kHz (X2), -3 dB, anti-alias and reconstruction filters'), ('Input stage', '5:1 soft-knee compression above -3 dB, soft limiter at 0 dB'),
        ('Feedback filter', '6 dB/octave low-pass, -3 dB at 4 kHz'), ('Latency', 'None (the direct signal is not delayed)')],
- about_h='About', about='NF Delay 42 version %s. NF Audio Tools by Nenno Fernando. Copyright 2026 NF Audio Tools. All rights reserved.' % VERSION,
+ about_h='About', about='NF D-42 version %s. NF Audio Tools by Nenno Fernando. Copyright 2026 NF Audio Tools. All rights reserved.' % VERSION,
  pg='Page')
 
 PT = dict(
- file='NF_Delay42_Manual_Portugues.pdf', tag='Processador de delay digital', sub='Manual do usuário', ver='Versão %s' % VERSION,
+ file='NF_D42_Manual_Portugues.pdf', tag='Processador de delay digital', sub='Manual do usuário', ver='Versão %s' % VERSION,
  intro_h='Introdução',
- intro=['O NF Delay 42 é um processador de delay digital com memória longa, varredura controlada por tensão (VCO), clock programável e função de repetição infinita. '
+ intro=['O NF D-42 é um processador de delay digital com memória longa, varredura controlada por tensão (VCO), clock programável e função de repetição infinita. '
         'Ele cobre desde dobras de voz, chorus e flanger (poucos milissegundos), passando por slap-back e ecos estilo fita, até delays longos e loops ao vivo de até 2,4 segundos.',
         'Ele é modelado no comportamento descrito no manual público de um delay digital de rack 1U clássico: faixas de delay, razão de varredura, limitador de entrada, filtros, '
         'clock e lógica de repetição seguem esse manual. É um produto original da NF Audio Tools, sem vínculo nem endosso do fabricante de qualquer equipamento que o inspirou; '
         'todas as marcas pertencem aos seus respectivos donos.'],
  quick_h='Início rápido',
- quick=['Insira o NF Delay 42 em uma faixa ou auxiliar (estéreo ou mono). Escolha um preset na aba de presets (canto superior direito), por exemplo "Slapback" ou "Flanger".',
+ quick=['Insira o NF D-42 em uma faixa ou auxiliar (estéreo ou mono). Escolha um preset na aba de presets (canto superior direito), por exemplo "Slapback" ou "Flanger".',
         'Ajuste LEVEL para que as luzes de HEADROOM cheguem à luz âmbar (-6) nos picos. A luz vermelha (0 dB) indica que o limitador de entrada está trabalhando.',
         'OUTPUT MIX mistura o sinal direto e o atrasado (centro = mistura igual). FEEDBACK define quantas repetições você ouve.',
         'Defina o tempo de delay com os botões UP / DOWN, com a roda do mouse sobre o display, ou arrastando o display para cima e para baixo.',
@@ -290,7 +290,7 @@ PT = dict(
        ('Vibrato', 'OUTPUT MIX todo à direita (só atrasado), delay de 10 a 20 ms, FEEDBACK 0, DEPTH 2 a 4, senoidal, RATE 6 a 7.'),
        ('Pitch twisting', 'OUTPUT MIX todo à direita, DEPTH 6, quadrada ou senoidal; ou gire MANUAL à mão enquanto um som toca.'),
        ('Loop', 'Toque uma frase, aperte INFINITE REPEAT e toque por cima. Use SET-MODE CLK para escolher quando a captura acontece.')],
- pre_h='Presets', pre_p='A aba de presets tem Default (todos os controles na posição inicial), 12 presets de fábrica e a lista dos presets que você salvar. Save grava um arquivo em Documentos/NF Audio Tools/NF Delay 42/Presets.',
+ pre_h='Presets', pre_p='A aba de presets tem Default (todos os controles na posição inicial), 12 presets de fábrica e a lista dos presets que você salvar. Save grava um arquivo em Documentos/NF Audio Tools/NF D-42/Presets.',
  pre_head=['Preset', 'Delay', 'Feedback', 'Mix', 'Chaves', 'Depth', 'Onda', 'Rate'],
  tips_h='Dicas', tips=['Fique de olho nas luzes de HEADROOM: se a vermelha ficar acesa, diminua o LEVEL. O limitador de entrada é suave por projeto, mas ainda colore o som.',
       'Feedback em 10 sustenta por muito tempo. Diminua, ligue o HI CUT ou use o BYPASS para parar as repetições na hora.',
@@ -301,7 +301,7 @@ PT = dict(
        ('Faixa de delay', 'X1: 0 a 1200 ms; X2: 0 a 2400 ms (veja a tabela)'), ('Taps de delay', '256 por faixa'), ('Varredura', 'Depth de 0 a uma faixa completa de 3:1; rate de 0,1 a 10 Hz; senoidal, envelope, quadrada e misturas'),
        ('Largura de banda', '16 kHz (X1) e 6 kHz (X2), -3 dB, filtros anti-aliasing e de reconstrução'), ('Estágio de entrada', 'Compressão 5:1 com joelho suave acima de -3 dB, limitador suave em 0 dB'),
        ('Filtro do feedback', 'Passa-baixas de 6 dB/oitava, -3 dB em 4 kHz'), ('Latência', 'Nenhuma (o sinal direto não é atrasado)')],
- about_h='Sobre', about='NF Delay 42 versão %s. NF Audio Tools by Nenno Fernando. Copyright 2026 NF Audio Tools. Todos os direitos reservados.' % VERSION,
+ about_h='Sobre', about='NF D-42 versão %s. NF Audio Tools by Nenno Fernando. Copyright 2026 NF Audio Tools. Todos os direitos reservados.' % VERSION,
  pg='Página')
 
 def build(L, lang):

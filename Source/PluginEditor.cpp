@@ -97,13 +97,12 @@ void NFDelay42Editor::drawChassis (Graphics& g, float pixelWidth)
     // ---- brand
     g.setColour (Colour (0x55000000)); { juce::Path p; (void) p; }
     // product name: kept clear of the screws (x 107, y 78 and 150)
-    text (g, "nf delay", 40, 106, 27.0f, kLabel, true, true, juce::Justification::centredLeft);
-    text (g, "42", 46, 130, 38.0f, kLabel, true, true, juce::Justification::centredLeft);
+    text (g, "nf D-42", 42, 113, 32.0f, kLabel, true, true, juce::Justification::centredLeft);
     // brand logo in the place of the original maker's logo
     { static const juce::Image logo = juce::ImageCache::getFromMemory (NFDelay42BinaryData::nf_audio_tools_logo_png, NFDelay42BinaryData::nf_audio_tools_logo_pngSize);
       g.setImageResamplingQuality (juce::Graphics::highResamplingQuality); g.drawImage (logo, Rectangle<float> (1528.0f, 67.0f, 70.0f, 70.0f * (float) logo.getHeight() / (float) logo.getWidth())); }
     text (g, "POWER", 1547, 111, 11.5f);
-    text (g, "digital", 1665, 100, 16.0f, kLabel, true, true); text (g, "delay", 1650, 116, 16.0f, kLabel, true, true); text (g, "processor", 1665, 132, 16.0f, kLabel, true, true);
+    text (g, "digital", 1665, 95, 16.0f, kLabel, true, true); text (g, "delay", 1650, 111, 16.0f, kLabel, true, true); text (g, "processor", 1665, 127, 16.0f, kLabel, true, true);
 }
 
 // ------------------------------------------------------------------------------------------ editor
@@ -328,7 +327,7 @@ void NFDelay42Editor::showPresetMenu()
             chooser->launchAsync (juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles,
                 [this] (const juce::FileChooser& fc) { auto f = fc.getResult(); if (f == juce::File()) return;
                     auto res = nfd42::PresetManager::loadPreset (proc.apvts, f);
-                    if (res.failed()) juce::AlertWindow::showMessageBoxAsync (juce::MessageBoxIconType::WarningIcon, "NF Delay 42", res.getErrorMessage());
+                    if (res.failed()) juce::AlertWindow::showMessageBoxAsync (juce::MessageBoxIconType::WarningIcon, "NF D-42", res.getErrorMessage());
                     refreshPresetName(); });
         }
     });
@@ -336,13 +335,13 @@ void NFDelay42Editor::showPresetMenu()
 
 void NFDelay42Editor::showMainMenu()
 {
-    juce::PopupMenu m; m.addItem (10, "User manual (English)"); m.addItem (11, juce::String (juce::CharPointer_UTF8 ("Manual do usu\xc3\xa1rio (Portugu\xc3\xaas)"))); m.addSeparator(); m.addItem (1, "About NF Delay 42");
+    juce::PopupMenu m; m.addItem (10, "User manual (English)"); m.addItem (11, juce::String (juce::CharPointer_UTF8 ("Manual do usu\xc3\xa1rio (Portugu\xc3\xaas)"))); m.addSeparator(); m.addItem (1, "About NF D-42");
     m.showMenuAsync (juce::PopupMenu::Options().withTargetComponent (&menuBtn), [] (int r)
     {
-        if (r == 10) nfd42::ManualManager::openManual (NFDelay42BinaryData::NF_Delay42_Manual_English_pdf, NFDelay42BinaryData::NF_Delay42_Manual_English_pdfSize, "NF_Delay42_Manual_English.pdf");
-        else if (r == 11) nfd42::ManualManager::openManual (NFDelay42BinaryData::NF_Delay42_Manual_Portugues_pdf, NFDelay42BinaryData::NF_Delay42_Manual_Portugues_pdfSize, "NF_Delay42_Manual_Portugues.pdf");
+        if (r == 10) nfd42::ManualManager::openManual (NFDelay42BinaryData::NF_D42_Manual_English_pdf, NFDelay42BinaryData::NF_D42_Manual_English_pdfSize, "NF_D42_Manual_English.pdf");
+        else if (r == 11) nfd42::ManualManager::openManual (NFDelay42BinaryData::NF_D42_Manual_Portugues_pdf, NFDelay42BinaryData::NF_D42_Manual_Portugues_pdfSize, "NF_D42_Manual_Portugues.pdf");
         else if (r == 1)
-            juce::AlertWindow::showMessageBoxAsync (juce::MessageBoxIconType::InfoIcon, "NF Delay 42",
+            juce::AlertWindow::showMessageBoxAsync (juce::MessageBoxIconType::InfoIcon, "NF D-42",
                 juce::String ("Version ") + JucePlugin_VersionString + "\nNF Audio Tools by Nenno Fernando\n\n"
                 "A digital delay processor with VCO sweep, programmable clock and infinite repeat, modelled on the behaviour described "
                 "in the public owner's manual of a classic rack delay.");

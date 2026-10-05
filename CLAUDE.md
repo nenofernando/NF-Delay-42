@@ -1,4 +1,4 @@
-# NF Delay 42 -- notes for Claude
+# NF D-42 -- notes for Claude
 
 Digital delay processor plug-in (VST3 + AU, AAX later) by NF Audio Tools. Modelled on the **behaviour** described in the public owner's
 manual of a classic 1U rack digital delay (the manual is in `Docs/`, local only, not pushed). It is NOT a circuit-level clone: no schematic or
@@ -6,7 +6,7 @@ unit measurements were available, so the sound is built from the manual's number
 the original maker are deliberately not used.
 
 ## Identity
-- Product name **NF Delay 42** (the owner wrote "NF Delay-42"; the standing release model says no dash in plug-in names, so no dash; repo/folder `NF-Delay-42`).
+- Product name **NF D-42** (the owner wrote "NF D-42"; the standing release model says no dash in plug-in names, so no dash; repo/folder `NF-Delay-42`).
 - Bundle `com.nfaudiotools.nfdelay42`, plug-in code `Nfd4`, manufacturer `Nfat`, version in `CMakeLists.txt` line 5 (`project(NFDelay42 VERSION ...)`).
 - Licence: NOT enforced yet (`NFDelay42_LICENSE=OFF`, no `Source/License/`). Owner adds it at the end with Paulo (see his release checklist).
 

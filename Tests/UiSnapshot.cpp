@@ -1,4 +1,4 @@
-// Developer tool: renders NF Delay 42's editor to a PNG.  Usage: NFDelay42Snapshot out.png [width] [tap] [clockMode 0/1] [peakSignalDb]
+// Developer tool: renders NF D-42's editor to a PNG.  Usage: NFDelay42Snapshot out.png [width] [tap] [clockMode 0/1] [peakSignalDb]
 #include <JuceHeader.h>
 #include "../Source/PluginProcessor.h"
 #include "../Source/PluginEditor.h"

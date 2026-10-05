@@ -38,7 +38,7 @@ void setParam (juce::AudioProcessorValueTreeState& apvts, const char* id, float 
 
 juce::File PresetManager::getPresetsDirectory()
 {
-    auto dir = juce::File::getSpecialLocation (juce::File::userDocumentsDirectory).getChildFile ("NF Audio Tools").getChildFile ("NF Delay 42").getChildFile ("Presets");
+    auto dir = juce::File::getSpecialLocation (juce::File::userDocumentsDirectory).getChildFile ("NF Audio Tools").getChildFile ("NF D-42").getChildFile ("Presets");
     dir.createDirectory();
     return dir;
 }
@@ -95,11 +95,11 @@ juce::Result PresetManager::savePreset (juce::AudioProcessorValueTreeState& apvt
 
 juce::Result PresetManager::loadPreset (juce::AudioProcessorValueTreeState& apvts, const juce::File& file)
 {
-    if (! file.existsAsFile() || file.getSize() <= 0 || file.getSize() > kMaxFileBytes) return juce::Result::fail ("Invalid NF Delay 42 preset");
+    if (! file.existsAsFile() || file.getSize() <= 0 || file.getSize() > kMaxFileBytes) return juce::Result::fail ("Invalid NF D-42 preset");
     auto xml = juce::XmlDocument::parse (file);
     if (xml == nullptr || xml->getStringAttribute ("nfdPresetSignature") != kSignature || xml->getIntAttribute ("nfdPresetFormatVersion", -1) <= 0
         || ! xml->hasTagName (apvts.state.getType()))
-        return juce::Result::fail ("Invalid NF Delay 42 preset");
+        return juce::Result::fail ("Invalid NF D-42 preset");
     apvts.replaceState (juce::ValueTree::fromXml (*xml));
     if (auto* p = apvts.getParameter ("inf")) p->setValueNotifyingHost (0.0f);
     return juce::Result::ok();

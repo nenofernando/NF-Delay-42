@@ -46,8 +46,8 @@ juce_add_plugin(NFDelay42
  PLUGIN_MANUFACTURER_CODE Nfat
  PLUGIN_CODE Nfd4
  FORMATS ${NFDelay42_FORMATS}
- PRODUCT_NAME "NF Delay 42"
- PLUGIN_NAME "NF Delay 42"
+ PRODUCT_NAME "NF D-42"
+ PLUGIN_NAME "NF D-42"
  DESCRIPTION "Digital delay processor with VCO sweep, clock and infinite repeat"
  IS_SYNTH FALSE NEEDS_MIDI_INPUT FALSE NEEDS_MIDI_OUTPUT FALSE IS_MIDI_EFFECT FALSE
  EDITOR_WANTS_KEYBOARD_FOCUS FALSE COPY_PLUGIN_AFTER_BUILD FALSE
@@ -55,7 +55,7 @@ juce_add_plugin(NFDelay42
  AU_MAIN_TYPE kAudioUnitType_Effect
  AAX_CATEGORY AAX_ePlugInCategory_Effect)
 juce_generate_juce_header(NFDelay42)
-juce_add_binary_data(NFDelay42Assets HEADER_NAME NFDelay42BinaryData.h NAMESPACE NFDelay42BinaryData SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/Assets/Logo/nf_audio_tools_logo.png" "${CMAKE_CURRENT_SOURCE_DIR}/Assets/Manuals/NF_Delay42_Manual_English.pdf" "${CMAKE_CURRENT_SOURCE_DIR}/Assets/Manuals/NF_Delay42_Manual_Portugues.pdf")
+juce_add_binary_data(NFDelay42Assets HEADER_NAME NFDelay42BinaryData.h NAMESPACE NFDelay42BinaryData SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/Assets/Logo/nf_audio_tools_logo.png" "${CMAKE_CURRENT_SOURCE_DIR}/Assets/Manuals/NF_D42_Manual_English.pdf" "${CMAKE_CURRENT_SOURCE_DIR}/Assets/Manuals/NF_D42_Manual_Portugues.pdf")
 
 target_sources(NFDelay42 PRIVATE
  Source/PluginProcessor.cpp Source/PluginProcessor.h Source/PluginEditor.cpp Source/PluginEditor.h
@@ -79,6 +79,6 @@ if(NFDelay42_BUILD_SNAPSHOT)
  juce_add_console_app(NFDelay42Snapshot PRODUCT_NAME "NFDelay42Snapshot")
  juce_generate_juce_header(NFDelay42Snapshot)
  target_sources(NFDelay42Snapshot PRIVATE Tests/UiSnapshot.cpp Source/PluginProcessor.cpp Source/PluginEditor.cpp Source/PresetManager.cpp Source/ManualManager.cpp)
- target_compile_definitions(NFDelay42Snapshot PRIVATE JucePlugin_Name="NF Delay 42" JucePlugin_VersionString="1.0.0" JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 JUCE_STANDALONE_APPLICATION=1 JucePlugin_Build_Standalone=0 JUCE_MODAL_LOOPS_PERMITTED=1)
+ target_compile_definitions(NFDelay42Snapshot PRIVATE JucePlugin_Name="NF D-42" JucePlugin_VersionString="1.0.0" JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 JUCE_STANDALONE_APPLICATION=1 JucePlugin_Build_Standalone=0 JUCE_MODAL_LOOPS_PERMITTED=1)
  target_link_libraries(NFDelay42Snapshot PRIVATE NFDelay42Assets juce::juce_audio_utils juce::juce_dsp juce::juce_gui_extra juce::juce_recommended_config_flags)
 endif()

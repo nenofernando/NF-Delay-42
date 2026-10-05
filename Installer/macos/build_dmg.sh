@@ -1,12 +1,12 @@
 #!/bin/bash
-# NF Delay 42 - macOS installer builder (by NF Audio Tools / Nenno Fernando).
+# NF D-42 - macOS installer builder (by NF Audio Tools / Nenno Fernando).
 #
 # Builds VST3 + AU + AAX (universal arm64 + x86_64) on THIS Mac, signs the AAX with PACE wraptool,
 # wraps everything into a standard macOS installer (.pkg: welcome, read-me, format options, conclusion,
 # all in English) and puts it inside a DMG. Nothing is uploaded anywhere.
 #
 # Usage (from anywhere):   bash Installer/macos/build_dmg.sh
-# Result:                  ~/Desktop/NF Delay 42 <version>.dmg   (open it, double-click "Install NF Delay 42")
+# Result:                  ~/Desktop/NF D-42 <version>.dmg   (open it, double-click "Install NF D-42")
 #
 # No Apple Developer account is needed: the VST3/AU are ad-hoc signed and the .pkg is unsigned
 # (on another Mac: right-click the .pkg > Open the first time, or System Settings > Privacy & Security > Open Anyway).
@@ -17,7 +17,7 @@
 #                             (or set WRAP_PASSWORD for a one-off run; it is never stored).
 #   AAX_SDK_PATH=/path        AAX SDK folder (default: auto-detected inside ~/Documents, e.g. ~/Documents/aax-sdk-2-9-0)
 #   WRAPTOOL=/path/wraptool   PACE wraptool (default: found on PATH or under /Applications/PACEAntiPiracy)
-#   WRAP_GUID=...             wrap GUID (default: 11CC5C90-C06D-11F1-8E61-00505692C25A, official NF Delay 42 wrap)
+#   WRAP_GUID=...             wrap GUID (default: 11CC5C90-C06D-11F1-8E61-00505692C25A, official NF D-42 wrap)
 #   EXTRA_CMAKE_ARGS="..."    extra cmake options (for example -DFETCHCONTENT_SOURCE_DIR_JUCE=/path/to/JUCE)
 #   EXTRA_WRAP_ARGS="..."     extra `wraptool sign` options your PACE setup needs
 #   SIGN_ID="..."             Apple code-sign identity for VST3/AU (default "-" = ad-hoc, no Apple Developer)
@@ -39,7 +39,7 @@ CMAKE_FILE="$REPO_ROOT/CMakeLists.txt"
 VERSION="$(grep -m1 -oE 'project\(NFDelay42 VERSION [0-9]+\.[0-9]+\.[0-9]+' "$CMAKE_FILE" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')"
 [ -n "$VERSION" ] || { echo "Could not read the version from $CMAKE_FILE" >&2; exit 1; }
 
-PRODUCT="NF Delay 42"
+PRODUCT="NF D-42"
 ID_BASE="com.nfaudiotools.nfdelay42"
 BUILD_DIR="$REPO_ROOT/build-installer"
 WORK="$REPO_ROOT/build-installer-work"
@@ -54,10 +54,10 @@ if [ -z "${WRAP_SIGNID:-}" ]; then
   elif security find-identity -v -p codesigning 2>/dev/null | grep -q "$LOCAL_SIGNID"; then WRAP_SIGNID="$LOCAL_SIGNID"
   else WRAP_SIGNID="-"; fi
 fi
-WRAP_GUID="${WRAP_GUID:-11CC5C90-C06D-11F1-8E61-00505692C25A}"   # official PACE wrap for NF Delay 42 (account nenofernando)
+WRAP_GUID="${WRAP_GUID:-11CC5C90-C06D-11F1-8E61-00505692C25A}"   # official PACE wrap for NF D-42 (account nenofernando)
 WITH_AAX=1; [ "${SKIP_AAX:-0}" = "1" ] && WITH_AAX=0
 if [ "$WITH_AAX" = "1" ] && [ -z "$WRAP_GUID" ] && [ -z "${WRITE_RESOURCES_ONLY:-}" ]; then
-  echo "WRAP_GUID is not set. Register NF Delay 42 in PACE Central first (Paulo), then run:  WRAP_GUID=<guid> bash $0   (or SKIP_AAX=1 for VST3 + AU only)" >&2; exit 1
+  echo "WRAP_GUID is not set. Register NF D-42 in PACE Central first (Paulo), then run:  WRAP_GUID=<guid> bash $0   (or SKIP_AAX=1 for VST3 + AU only)" >&2; exit 1
 fi
 PKG_NAME="Install $PRODUCT $VERSION.pkg"
 VOLNAME="$PRODUCT $VERSION"

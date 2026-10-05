@@ -5,7 +5,7 @@ namespace nfd42
 void ManualManager::openManual (const char* data, int size, const juce::String& filename)
 {
     auto dir = juce::File::getSpecialLocation (juce::File::userApplicationDataDirectory)
-                   .getChildFile ("NF Audio Tools").getChildFile ("NF Delay 42").getChildFile ("Manuals");
+                   .getChildFile ("NF Audio Tools").getChildFile ("NF D-42").getChildFile ("Manuals");
     dir.createDirectory();
     auto file = dir.getChildFile (filename);
     if (! file.existsAsFile() || file.getSize() != (juce::int64) size)

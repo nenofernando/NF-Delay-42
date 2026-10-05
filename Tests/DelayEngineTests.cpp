@@ -1,4 +1,4 @@
-// Offline tests of the NF Delay 42 DSP core against the numbers in the manual. Build:
+// Offline tests of the NF D-42 DSP core against the numbers in the manual. Build:
 //   c++ -std=c++17 -O2 Tests/DelayEngineTests.cpp -o /tmp/nfd_tests && /tmp/nfd_tests
 #include "../Source/DSP/DelayEngine.h"
 #include <cstdio>
