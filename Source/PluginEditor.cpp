@@ -1,4 +1,5 @@
 #include "PluginEditor.h"
+#include "NFDelay42BinaryData.h"
 
 using namespace nfd42ui;
 using juce::Rectangle; using juce::Graphics;
@@ -21,11 +22,12 @@ void NFDelay42Editor::drawChassis (Graphics& g, float pixelWidth)
         for (float y : { 60.0f, 169.0f })
         { if (x > 1000.0f && y < 100.0f) continue;      // top-right slot makes room for the preset tab / menu button
           g.setColour (Colour (0xfff2eff3)); g.fillRoundedRectangle (x - 17, y - 11, 34, 22, 11); g.setColour (Colour (0x66000000)); g.drawRoundedRectangle (x - 17, y - 11, 34, 22, 11, 1.0f); }
+    // four identical screws, symmetric (y 78 / 150), clear of the preset tab at the top right
     for (float x : { 107.0f, 1637.0f })
-        for (float y : { 65.0f, 163.0f })
-        { const float yy = (x > 1000.0f && y < 100.0f) ? 77.0f : y, r = (x > 1000.0f && y < 100.0f) ? 9.0f : 13.0f;
-          g.setColour (Colour (0xff2a2933)); g.fillEllipse (x - r, yy - r, 2 * r, 2 * r); g.setColour (Colour (0xff15151b)); g.fillEllipse (x - r * 0.4f, yy - r * 0.4f, r * 0.8f, r * 0.8f);
-          g.setColour (Colour (0xff6b6a78)); g.drawEllipse (x - r, yy - r, 2 * r, 2 * r, 1.0f); }
+        for (float y : { 78.0f, 150.0f })
+        { const float r = 11.0f;
+          g.setColour (Colour (0xff2a2933)); g.fillEllipse (x - r, y - r, 2 * r, 2 * r); g.setColour (Colour (0xff15151b)); g.fillEllipse (x - r * 0.4f, y - r * 0.4f, r * 0.8f, r * 0.8f);
+          g.setColour (Colour (0xff6b6a78)); g.drawEllipse (x - r, y - r, 2 * r, 2 * r, 1.0f); }
 
     // blue sections
     auto section = [&] (float x0, float x1, Colour c) { g.setColour (c); g.fillRoundedRectangle (x0, 64, x1 - x0, 106, 16.0f);
@@ -93,14 +95,14 @@ void NFDelay42Editor::drawChassis (Graphics& g, float pixelWidth)
 
     // ---- brand
     g.setColour (Colour (0x55000000)); { juce::Path p; (void) p; }
-    text (g, "nf", 44, 96, 40.0f, kLabel, true, true, juce::Justification::centredLeft);
-    text (g, "delay", 82, 104, 17.0f, kLabel, true, true, juce::Justification::centredLeft);
-    text (g, "42", 70, 143, 50.0f, kLabel, true, true, juce::Justification::centredLeft);
-    text (g, "NF", 1535, 88, 30.0f, kLabel, true, true, juce::Justification::centredLeft);
-    text (g, "AUDIO", 1580, 81, 10.0f, kLabel, true, false, juce::Justification::centredLeft);
-    text (g, "TOOLS", 1580, 94, 10.0f, kLabel, true, false, juce::Justification::centredLeft);
+    // product name: kept clear of the screws (x 107, y 78 and 150)
+    text (g, "nf delay", 40, 106, 27.0f, kLabel, true, true, juce::Justification::centredLeft);
+    text (g, "42", 46, 130, 38.0f, kLabel, true, true, juce::Justification::centredLeft);
+    // brand logo in the place of the original maker's logo
+    { static const juce::Image logo = juce::ImageCache::getFromMemory (NFDelay42BinaryData::nf_audio_tools_logo_png, NFDelay42BinaryData::nf_audio_tools_logo_pngSize);
+      g.setImageResamplingQuality (juce::Graphics::highResamplingQuality); g.drawImage (logo, Rectangle<float> (1528.0f, 67.0f, 70.0f, 70.0f * (float) logo.getHeight() / (float) logo.getWidth())); }
     text (g, "POWER", 1547, 111, 11.5f);
-    text (g, "digital", 1665, 107, 17.0f, kLabel, true, true); text (g, "delay", 1650, 127, 17.0f, kLabel, true, true); text (g, "processor", 1665, 147, 17.0f, kLabel, true, true);
+    text (g, "digital", 1665, 100, 16.0f, kLabel, true, true); text (g, "delay", 1650, 116, 16.0f, kLabel, true, true); text (g, "processor", 1665, 132, 16.0f, kLabel, true, true);
 }
 
 // ------------------------------------------------------------------------------------------ editor
