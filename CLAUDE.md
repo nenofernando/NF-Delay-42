@@ -37,6 +37,13 @@ cmake --build . --target NFDelay42_VST3 NFDelay42_AU NFDelay42DspTests -j8
 UI snapshot (renders the editor to a PNG, never shipped): `-DNFDelay42_BUILD_SNAPSHOT=ON`, target `NFDelay42Snapshot`, usage `NFDelay42Snapshot out.png [width] [tap] [clockMode] [peakDb]`.
 AAX (owner's Mac only): `-DNFDelay42_ENABLE_AAX=ON` with the SDK in `~/Documents/AAX_SDK`, then sign with PACE `wraptool` (no wrap GUID registered yet for this product).
 
+## Release (macOS DMG)
+Official PACE wrap GUID **11CC5C90-C06D-11F1-8E61-00505692C25A** (account `nenofernando`, product "NF D-42"); AAX SDK `~/Documents/aax-sdk-2-9-0`. The DMG is built from a fresh clone of `origin/main`, in the owner's Terminal tab (wraptool may ask for the password):
+```bash
+rm -rf ~/NF-Delay-42-release && git clone --depth 1 https://github.com/nenofernando/NF-Delay-42.git ~/NF-Delay-42-release && cd ~/NF-Delay-42-release && AAX_SDK_PATH=~/Documents/aax-sdk-2-9-0 WRAPTOOL=/Applications/PACEAntiPiracy/Eden/Fusion/Versions/6/bin/wraptool WRAP_ACCOUNT=nenofernando OUT_DIR=~/Desktop EXTRA_CMAKE_ARGS="-DFETCHCONTENT_SOURCE_DIR_JUCE=$HOME/JUCE" bash Installer/macos/build_dmg.sh
+```
+Result `~/Desktop/NF D-42 <version>.dmg` (universal VST3 + AU + PACE-signed AAX, English installer, no Apple Developer). Two keychains hold a cert named "NF Audio Tools AAX Local Signing": the script now passes the SHA-1 of the first match. The name shown to users is **NF D-42** (plug-in, panel, manuals, installer); repo, CMake target and bundle id stay `NFDelay42` / `com.nfaudiotools.nfdelay42`. Licence is OFF (`NFDelay42_LICENSE`). Manuals: `python3 Docs/make_manual.py` after re-capturing `Docs/manual/img/panel*.png` with `NFDelay42Snapshot`.
+
 ## TODO
-- Manuals (PT/EN PDF) and the matching 3-line menu entries; installers (macOS DMG script, Windows .iss); PACE product/wrap; licence (with Paulo); GitHub repo `nenofernando/NF-Delay-42` + Paulo (`creativepfb`) as collaborator.
+- Windows installer (.iss) and Windows build; licence (with Paulo, `NFDelay42_LICENSE`); Paulo (`creativepfb`) as collaborator; manual wording review by ear/use.
 - If the owner can record the real unit (impulse, noise, a sweep), the converter/filter character can be matched much closer.

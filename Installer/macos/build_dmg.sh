@@ -51,7 +51,9 @@ WRAP_ACCOUNT="${WRAP_ACCOUNT:-nenofernando}"
 LOCAL_SIGNID="NF Audio Tools AAX Local Signing"
 if [ -z "${WRAP_SIGNID:-}" ]; then
   if [ "$SIGN_ID" != "-" ]; then WRAP_SIGNID="$SIGN_ID"
-  elif security find-identity -v -p codesigning 2>/dev/null | grep -q "$LOCAL_SIGNID"; then WRAP_SIGNID="$LOCAL_SIGNID"
+  elif security find-identity -v -p codesigning 2>/dev/null | grep -q "$LOCAL_SIGNID"; then
+    # Two keychains may hold a certificate with the same name ("ambiguous" in codesign): use the SHA-1 of the first match.
+    WRAP_SIGNID="$(security find-identity -v -p codesigning 2>/dev/null | grep "$LOCAL_SIGNID" | head -n 1 | awk '{print $2}')"
   else WRAP_SIGNID="-"; fi
 fi
 WRAP_GUID="${WRAP_GUID:-11CC5C90-C06D-11F1-8E61-00505692C25A}"   # official PACE wrap for NF D-42 (account nenofernando)
