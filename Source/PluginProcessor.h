@@ -1,6 +1,7 @@
 #pragma once
 #include <JuceHeader.h>
 #include "DSP/DelayEngine.h"
+#include "License/NFLicenseManager.h"
 
 class NFDelay42AudioProcessor : public juce::AudioProcessor
 {
@@ -31,6 +32,7 @@ public:
     nfd::Params readParams() const;
 
     juce::AudioProcessorValueTreeState apvts;
+    NFLicenseManager licenseManager { "NF_D_42" };   // only enforced when built with NF_LICENSE_ENFORCE (CMake option NFDelay42_LICENSE)
     nfd::Engine engine;      // read-outs (HEADROOM, display, LEDs) are polled by the editor
 
 private:

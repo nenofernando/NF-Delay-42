@@ -71,6 +71,10 @@ nfd::Params NFDelay42AudioProcessor::readParams() const
 void NFDelay42AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer&)
 {
     juce::ScopedNoDenormals noDenormals;
+   #ifdef NF_LICENSE_ENFORCE
+    // Unlicensed: whatever path below runs (even "power off, signal passes"), the buffer leaves silent.
+    struct LicenseMuteGuard { NFLicenseManager& lm; juce::AudioBuffer<float>& b; ~LicenseMuteGuard() { if (! lm.isActivated()) b.clear(); } } licenseGuard { licenseManager, buffer };
+   #endif
     const bool powered = apvts.getRawParameterValue ("power")->load() > 0.5f;
     if (! powered) { wasPowered = false; return; }          // unit switched off: the signal passes untouched
     if (! wasPowered) { engine.reset(); wasPowered = true; } // power-up: memory empty, repeat off

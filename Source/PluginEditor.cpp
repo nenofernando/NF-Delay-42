@@ -1,4 +1,5 @@
 #include "PluginEditor.h"
+#include "License/NFUpdateCheck.h"
 #include "NFDelay42BinaryData.h"
 #include "ManualManager.h"
 
@@ -107,6 +108,9 @@ void NFDelay42Editor::drawChassis (Graphics& g, float pixelWidth)
 
 // ------------------------------------------------------------------------------------------ editor
 NFDelay42Editor::NFDelay42Editor (NFDelay42AudioProcessor& p) : AudioProcessorEditor (&p), proc (p)
+   #ifdef NF_LICENSE_ENFORCE
+    , licenseOverlay (p.licenseManager)
+   #endif
 {
     auto& v = proc.apvts;
     aLevel = std::make_unique<Slide> (v, "level", level);       aFeedback = std::make_unique<Slide> (v, "feedback", feedback);
@@ -135,6 +139,13 @@ NFDelay42Editor::NFDelay42Editor (NFDelay42AudioProcessor& p) : AudioProcessorEd
     setResizeLimits (850, 76, 3400, 304);
     getConstrainer()->setFixedAspectRatio ((double) (kW / kH));
     setSize (w, juce::roundToInt (w * kH / kW));
+   #ifdef NF_LICENSE_ENFORCE
+    addChildComponent (licenseOverlay);   // last child = on top of everything
+    licenseOverlay.setVisible (! proc.licenseManager.isActivated());
+    licenseOverlay.onActivated = [this] { licenseOverlay.setVisible (false); };
+    licenseOverlay.setLookAndFeel (&juce::LookAndFeel::getDefaultLookAndFeel());
+    licenseOverlay.setBounds (getLocalBounds());
+   #endif
     startTimerHz (30);
 }
 
@@ -158,6 +169,9 @@ void NFDelay42Editor::resized()
     place (downBtn, 836, 124, 45, 45);  place (upBtn, 908, 124, 45, 45);      place (setMode, 872, 89, 30, 13);
     place (presetTab, 1600.5f, 53.5f, 157, 21); place (menuBtn, 1690.5f, 53.5f, 21, 21);
     logoRect = { 1526, 64, 76, 46 }; displayRect = { 948, 85, 165, 62 }; bypassRect = { 606, 148, 64, 18 };
+   #ifdef NF_LICENSE_ENFORCE
+    licenseOverlay.setBounds (getLocalBounds());
+   #endif
 }
 
 void NFDelay42Editor::paint (Graphics& g)
@@ -335,9 +349,11 @@ void NFDelay42Editor::showPresetMenu()
 
 void NFDelay42Editor::showMainMenu()
 {
-    juce::PopupMenu m; m.addItem (10, "User manual (English)"); m.addItem (11, juce::String (juce::CharPointer_UTF8 ("Manual do usu\xc3\xa1rio (Portugu\xc3\xaas)"))); m.addSeparator(); m.addItem (1, "About NF D-42");
-    m.showMenuAsync (juce::PopupMenu::Options().withTargetComponent (&menuBtn), [] (int r)
+    juce::PopupMenu m; m.addItem (10, "User manual (English)"); m.addItem (11, juce::String (juce::CharPointer_UTF8 ("Manual do usu\xc3\xa1rio (Portugu\xc3\xaas)"))); m.addSeparator(); m.addItem (2, "Check for updates..."); m.addItem (1, "About NF D-42");
+    juce::Component::SafePointer<NFDelay42Editor> safe (this);
+    m.showMenuAsync (juce::PopupMenu::Options().withTargetComponent (&menuBtn), [safe] (int r)
     {
+        if (r == 2 && safe != nullptr) safe->checkForUpdates();
         if (r == 10) nfd42::ManualManager::openManual (NFDelay42BinaryData::NF_D42_Manual_English_pdf, NFDelay42BinaryData::NF_D42_Manual_English_pdfSize, "NF_D42_Manual_English.pdf");
         else if (r == 11) nfd42::ManualManager::openManual (NFDelay42BinaryData::NF_D42_Manual_Portugues_pdf, NFDelay42BinaryData::NF_D42_Manual_Portugues_pdfSize, "NF_D42_Manual_Portugues.pdf");
         else if (r == 1)
@@ -345,5 +361,36 @@ void NFDelay42Editor::showMainMenu()
                 juce::String ("Version ") + JucePlugin_VersionString + "\nNF Audio Tools by Nenno Fernando\n\n"
                 "A digital delay processor with VCO sweep, programmable clock and infinite repeat, modelled on the behaviour described "
                 "in the public owner's manual of a classic rack delay.");
+    });
+}
+
+// Only runs when the user clicks the menu item: one request to the NF server, off the message thread.
+// The callback runs after the network round trip, so the editor may be gone by then (SafePointer).
+void NFDelay42Editor::checkForUpdates()
+{
+    juce::Component::SafePointer<NFDelay42Editor> safe (this);
+    nfupdate::checkAsync ("nf-d-42", JucePlugin_VersionString, [safe] (nfupdate::Result r)
+    {
+        if (safe == nullptr) return;
+        const juce::String title = "NF D-42";
+
+        if (! r.reachedServer)
+        {
+            juce::AlertWindow::showMessageBoxAsync (juce::MessageBoxIconType::WarningIcon, title,
+                "Could not check for updates. Please check your internet connection and try again.");
+            return;
+        }
+        if (! r.updateAvailable)
+        {
+            juce::AlertWindow::showMessageBoxAsync (juce::MessageBoxIconType::InfoIcon, title,
+                juce::String ("You have the latest version (V") + JucePlugin_VersionString + ").");
+            return;
+        }
+        const auto options = juce::MessageBoxOptions().withIconType (juce::MessageBoxIconType::InfoIcon).withTitle (title)
+            .withMessage ("A new version is available: V" + r.latestVersion + " (you have V" + juce::String (JucePlugin_VersionString) + ").\n\nDownload it now?")
+            .withButton ("Download").withButton ("Later");
+        const auto url = r.downloadUrl;
+        // AlertWindow result codes with two buttons: first = 1, second = 0.
+        juce::AlertWindow::showAsync (options, [url] (int button) { if (button == 1) juce::URL (url).launchInDefaultBrowser(); });
     });
 }

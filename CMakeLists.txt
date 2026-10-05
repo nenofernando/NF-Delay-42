@@ -6,8 +6,9 @@ project(NFDelay42 VERSION 1.0.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 option(NFDelay42_FETCH_JUCE "Fetch JUCE when not installed" ON)
-# New NF plug-ins are NOT licence-locked while they are being developed; the licence is added at the end with Paulo.
-option(NFDelay42_LICENSE "Enforce the NF License System (mute + activation overlay)" OFF)
+# The NF License System (mute + activation overlay) is ON by default so every release build, Windows and the
+# macOS DMG, ships locked. Pass -DNFDelay42_LICENSE=OFF only for local development.
+option(NFDelay42_LICENSE "Enforce the NF License System (mute + activation overlay)" ON)
 option(NFDelay42_ENABLE_AAX "Build AAX (licensed SDK required)" OFF)
 if(WIN32)
  set(_nfd_home "$ENV{USERPROFILE}")
@@ -61,7 +62,10 @@ target_sources(NFDelay42 PRIVATE
  Source/PluginProcessor.cpp Source/PluginProcessor.h Source/PluginEditor.cpp Source/PluginEditor.h
  Source/PresetManager.cpp Source/PresetManager.h Source/ManualManager.cpp Source/ManualManager.h Source/DSP/DelayEngine.h Source/UI/PanelParts.h)
 target_compile_definitions(NFDelay42 PUBLIC JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 JUCE_VST3_CAN_REPLACE_VST2=0 JUCE_DISPLAY_SPLASH_SCREEN=0 JUCE_REPORT_APP_USAGE=0)
-target_link_libraries(NFDelay42 PRIVATE NFDelay42Assets juce::juce_audio_utils juce::juce_dsp PUBLIC juce::juce_recommended_config_flags juce::juce_recommended_lto_flags juce::juce_recommended_warning_flags)
+if(NFDelay42_LICENSE)
+ target_compile_definitions(NFDelay42 PUBLIC NF_LICENSE_ENFORCE=1)
+endif()
+target_link_libraries(NFDelay42 PRIVATE NFDelay42Assets juce::juce_audio_utils juce::juce_dsp juce::juce_cryptography PUBLIC juce::juce_recommended_config_flags juce::juce_recommended_lto_flags juce::juce_recommended_warning_flags)
 
 # DSP unit tests (plain C++, no JUCE)
 add_executable(NFDelay42DspTests Tests/DelayEngineTests.cpp)
@@ -80,5 +84,11 @@ if(NFDelay42_BUILD_SNAPSHOT)
  juce_generate_juce_header(NFDelay42Snapshot)
  target_sources(NFDelay42Snapshot PRIVATE Tests/UiSnapshot.cpp Source/PluginProcessor.cpp Source/PluginEditor.cpp Source/PresetManager.cpp Source/ManualManager.cpp)
  target_compile_definitions(NFDelay42Snapshot PRIVATE JucePlugin_Name="NF D-42" JucePlugin_VersionString="1.0.0" JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 JUCE_STANDALONE_APPLICATION=1 JucePlugin_Build_Standalone=0 JUCE_MODAL_LOOPS_PERMITTED=1)
- target_link_libraries(NFDelay42Snapshot PRIVATE NFDelay42Assets juce::juce_audio_utils juce::juce_dsp juce::juce_gui_extra juce::juce_recommended_config_flags)
+ target_link_libraries(NFDelay42Snapshot PRIVATE NFDelay42Assets juce::juce_audio_utils juce::juce_dsp juce::juce_cryptography juce::juce_gui_extra juce::juce_recommended_config_flags)
 endif()
+
+# "Check for updates" regression tests (version comparison, download-URL allow-list). No network.
+add_executable(NFDelay42UpdateTests Tests/UpdateCheckTests.cpp)
+target_compile_definitions(NFDelay42UpdateTests PRIVATE JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 JUCE_STANDALONE_APPLICATION=1)
+target_link_libraries(NFDelay42UpdateTests PRIVATE juce::juce_core juce::juce_events juce::juce_recommended_config_flags)
+add_test(NAME NFDelay42UpdateTests COMMAND NFDelay42UpdateTests)

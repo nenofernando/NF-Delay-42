@@ -3,6 +3,9 @@
 #include "PluginProcessor.h"
 #include "UI/PanelParts.h"
 #include "PresetManager.h"
+#ifdef NF_LICENSE_ENFORCE
+ #include "License/LicenseActivationComponent.h"
+#endif
 
 // Front panel drawn in the coordinate space of the reference photo (panel = x 22..1722, y 40..192 -> 1700 x 152).
 class NFDelay42Editor : public juce::AudioProcessorEditor, private juce::Timer
@@ -57,6 +60,11 @@ private:
     float shownDelay = 0.0f, shownPeak = -120.0f; uint32_t lastTicks = 0; juce::int64 clkFlashUntil = 0;
     bool firstDown = false, firstPressedUp = false; int heldMs = 0, repeatAcc = 0; int dragStartTap = 0;
     juce::Rectangle<float> displayRect, bypassRect, logoRect;
+
+   #ifdef NF_LICENSE_ENFORCE
+    LicenseActivationComponent licenseOverlay;   // declared last: initialised after `proc`
+   #endif
+    void checkForUpdates();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NFDelay42Editor)
 };
