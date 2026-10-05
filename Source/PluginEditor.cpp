@@ -22,7 +22,7 @@ void NFDelay42Editor::drawChassis (Graphics& g, float pixelWidth)
     // rack ears: slots and screws
     for (float x : { 52.0f, 1692.0f })
         for (float y : { 60.0f, 169.0f })
-        { if (x > 1000.0f && y < 100.0f) continue;      // top-right slot makes room for the preset tab / menu button
+        {
           g.setColour (Colour (0xfff2eff3)); g.fillRoundedRectangle (x - 17, y - 11, 34, 22, 11); g.setColour (Colour (0x66000000)); g.drawRoundedRectangle (x - 17, y - 11, 34, 22, 11, 1.0f); }
     // four identical screws, symmetric (y 78 / 150), clear of the preset tab at the top right
     for (float x : { 107.0f, 1637.0f })
@@ -101,7 +101,7 @@ void NFDelay42Editor::drawChassis (Graphics& g, float pixelWidth)
     text (g, "nf D-42", 42, 113, 32.0f, kLabel, true, true, juce::Justification::centredLeft);
     // brand logo in the place of the original maker's logo
     { static const juce::Image logo = juce::ImageCache::getFromMemory (NFDelay42BinaryData::nf_audio_tools_logo_png, NFDelay42BinaryData::nf_audio_tools_logo_pngSize);
-      g.setImageResamplingQuality (juce::Graphics::highResamplingQuality); g.drawImage (logo, Rectangle<float> (1528.0f, 67.0f, 70.0f, 70.0f * (float) logo.getHeight() / (float) logo.getWidth())); }
+      g.setImageResamplingQuality (juce::Graphics::highResamplingQuality); g.drawImage (logo, Rectangle<float> (1527.3f, 65.0f, 78.0f, 78.0f * (float) logo.getHeight() / (float) logo.getWidth())); }
     text (g, "POWER", 1547, 111, 11.5f);
     text (g, "digital", 1665, 95, 16.0f, kLabel, true, true); text (g, "delay", 1650, 111, 16.0f, kLabel, true, true); text (g, "processor", 1665, 127, 16.0f, kLabel, true, true);
 }
@@ -167,8 +167,8 @@ void NFDelay42Editor::resized()
     place (hicut, 491, 137, 38, 38);    place (fbinv, 545, 137, 38, 38);      place (dlyinv, 598, 137, 38, 38);
     place (infBtn, 768, 138, 36, 36);   place (x2Btn, 257, 137, 42, 42);      place (power, 1548, 137, 42, 42);
     place (downBtn, 836, 124, 45, 45);  place (upBtn, 908, 124, 45, 45);      place (setMode, 872, 89, 30, 13);
-    place (presetTab, 1600.5f, 53.5f, 157, 21); place (menuBtn, 1690.5f, 53.5f, 21, 21);
-    logoRect = { 1526, 64, 76, 46 }; displayRect = { 948, 85, 165, 62 }; bypassRect = { 606, 148, 64, 18 };
+    place (presetTab, 1562.5f, 53.5f, 157, 21); place (menuBtn, 1652.5f, 53.5f, 21, 21);
+    logoRect = { 1524, 62, 84, 48 }; displayRect = { 948, 85, 165, 62 }; bypassRect = { 606, 148, 64, 18 };
    #ifdef NF_LICENSE_ENFORCE
     licenseOverlay.setBounds (getLocalBounds());
    #endif
