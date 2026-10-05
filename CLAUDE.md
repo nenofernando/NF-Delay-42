@@ -8,7 +8,7 @@ the original maker are deliberately not used.
 ## Identity
 - Product name **NF D-42** (the owner wrote "NF D-42"; the standing release model says no dash in plug-in names, so no dash; repo/folder `NF-Delay-42`).
 - Bundle `com.nfaudiotools.nfdelay42`, plug-in code `Nfd4`, manufacturer `Nfat`, version in `CMakeLists.txt` line 5 (`project(NFDelay42 VERSION ...)`).
-- Licence: NOT enforced yet (`NFDelay42_LICENSE=OFF`, no `Source/License/`). Owner adds it at the end with Paulo (see his release checklist).
+- Licence: ENFORCED by default (`NFDelay42_LICENSE=ON`, productCode `NF_D_42`, `Source/License/`, mute guard in `processBlock`, activation overlay added last). Local dev only: `-DNFDelay42_LICENSE=OFF`. 'Check for updates...' is in the menu (release tag `nf-d-42`).
 
 ## Layout
 - `Source/DSP/DelayEngine.h` plain C++17 DSP core, no JUCE. `Tests/DelayEngineTests.cpp` tests it against the manual's numbers:
@@ -42,8 +42,8 @@ Official PACE wrap GUID **11CC5C90-C06D-11F1-8E61-00505692C25A** (account `nenof
 ```bash
 rm -rf ~/NF-Delay-42-release && git clone --depth 1 https://github.com/nenofernando/NF-Delay-42.git ~/NF-Delay-42-release && cd ~/NF-Delay-42-release && AAX_SDK_PATH=~/Documents/aax-sdk-2-9-0 WRAPTOOL=/Applications/PACEAntiPiracy/Eden/Fusion/Versions/6/bin/wraptool WRAP_ACCOUNT=nenofernando OUT_DIR=~/Desktop EXTRA_CMAKE_ARGS="-DFETCHCONTENT_SOURCE_DIR_JUCE=$HOME/JUCE" bash Installer/macos/build_dmg.sh
 ```
-Result `~/Desktop/NF D-42 <version>.dmg` (universal VST3 + AU + PACE-signed AAX, English installer, no Apple Developer). Two keychains hold a cert named "NF Audio Tools AAX Local Signing": the script now passes the SHA-1 of the first match. The name shown to users is **NF D-42** (plug-in, panel, manuals, installer); repo, CMake target and bundle id stay `NFDelay42` / `com.nfaudiotools.nfdelay42`. Licence is OFF (`NFDelay42_LICENSE`). Manuals: `python3 Docs/make_manual.py` after re-capturing `Docs/manual/img/panel*.png` with `NFDelay42Snapshot`.
+Result `~/Desktop/NF D-42 <version>.dmg` (universal VST3 + AU + PACE-signed AAX, English installer, no Apple Developer). Two keychains hold a cert named "NF Audio Tools AAX Local Signing": the script now passes the SHA-1 of the first match. The name shown to users is **NF D-42** (plug-in, panel, manuals, installer); repo, CMake target and bundle id stay `NFDelay42` / `com.nfaudiotools.nfdelay42`. Licence is ON by default (`NFDelay42_LICENSE`): always build the DMG from the latest `origin/main`. Manuals: `python3 Docs/make_manual.py` after re-capturing `Docs/manual/img/panel*.png` with `NFDelay42Snapshot`.
 
 ## TODO
-- Windows installer (.iss) and Windows build; licence (with Paulo, `NFDelay42_LICENSE`); Paulo (`creativepfb`) as collaborator; manual wording review by ear/use.
+- Done by Paulo's Claude: licence, update check, Windows build and `Installer/Windows/NFD42.iss`. Still open: manual wording review by ear/use.
 - If the owner can record the real unit (impulse, noise, a sweep), the converter/filter character can be matched much closer.
