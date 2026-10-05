@@ -1,0 +1,14 @@
+/build*/
+JUCE/
+.DS_Store
+*.dmg
+*.exe
+*.pkg
+*.vst3
+*.component
+*.aaxplugin
+Installer/Windows/payload/
+# third-party reference material (original manual, photo of the hardware): local only, never pushed
+Docs/PCM42_Owners_original.pdf
+Assets/Reference/
+build-snap/
